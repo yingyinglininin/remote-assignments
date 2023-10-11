@@ -18,30 +18,56 @@ const pool = mysql.createPool(dbConfig);
 const app = express()
 app.use(bodyParser.json());
 
+// Password Validation
+function validatePassword(password) {
+  // Define regular expressions for the character types
+  const uppercaseRegex = /[A-Z]/;
+  const lowercaseRegex = /[a-z]/;
+  const numberRegex = /[0-9]/;
+  const symbolRegex = /[~'!@#$%~&*()_\-+=\[\]:;"<,>.?/]/;
+
+  // Check if the password meets the requirements
+  const hasUppercase = uppercaseRegex.test(password);
+  const hasLowercase = lowercaseRegex.test(password);
+  const hasNumber = numberRegex.test(password);
+  const hasSymbol = symbolRegex.test(password);
+
+  // Count the number of character types that the password contains
+  const characterTypesCount = [hasUppercase, hasLowercase, hasNumber, hasSymbol].filter(Boolean).length;
+
+  // Password is valid if it contains at least three of the four character types
+  return characterTypesCount >= 3;
+}
+
 // Sign Up API
 app.post("/users", function (req, res) {
   try {
       const user = req.body;
       const insertQuery = 'INSERT INTO user (name, email, password) VALUES (?, ?, ?)';
       const values = [user.name, user.email, user.password];
-      
-      pool.query(insertQuery, values, (err, result) => {
-        if (err) {
-          res.status(409).json({ error: 'Email Already Exists' });
-        } else {
-            const responseData = {
-              "data": {
-                "user": {
-                  "id": result.insertId,
-                  "name": user.name,
-                  "email": user.email
-                },
-                "request-date": new Date().toUTCString()
-              }
-          };
-          res.status(200).json(responseData);
-        }
-      });
+
+      if (validatePassword(user.password)) {
+        pool.query(insertQuery, values, (err, result) => {
+          if (err) {
+            res.status(409).json({ error: 'Email Already Exists' });
+          } else {
+              const responseData = {
+                "data": {
+                  "user": {
+                    "id": result.insertId,
+                    "name": user.name,
+                    "email": user.email
+                  },
+                  "request-date": new Date().toUTCString()
+                }
+            };
+            res.status(200).json(responseData);
+          }
+        });
+      } else {
+        res.status(401).json({ error: 'Wrong Password Format' });
+      }
+
   } catch (error) {
       res.status(400).json({ error: 'Client Error Response' });
   }
