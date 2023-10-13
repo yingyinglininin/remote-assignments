@@ -2,7 +2,6 @@
 const mysql = require('mysql2');
 const config = require('config');
 const express = require('express');
-const bodyParser = require('body-parser');
 
 // MySQL connection setting
 const dbConfig = {
@@ -16,7 +15,6 @@ const dbConfig = {
 const pool = mysql.createPool(dbConfig);
 
 const app = express()
-app.use(bodyParser.json());
 
 // Password Validation
 function validatePassword(password) {
@@ -58,7 +56,7 @@ app.post("/users", function (req, res) {
                     "name": user.name,
                     "email": user.email
                   },
-                  "request-date": new Date().toUTCString()
+                  "request-date": req.get("Date")
                 }
             };
             res.status(200).json(responseData);
@@ -93,7 +91,7 @@ app.get('/users/:id', (req, res) => {
                 "name": user.name,
                 "email": user.email
               },
-              "request-date": new Date().toUTCString()
+              "request-date": req.get("Date")
             }
           };
           res.status(200).json(responseData);
