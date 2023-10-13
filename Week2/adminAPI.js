@@ -15,6 +15,7 @@ const dbConfig = {
 const pool = mysql.createPool(dbConfig);
 
 const app = express()
+app.use(express.json());
 
 // Password Validation
 function validatePassword(password) {
