@@ -25,7 +25,6 @@ yarn-error.log*
 # defualt file
 *.css
 *.md
-/public
 /src/App.test.js
 /src/index.js
 /src/logo.svg
