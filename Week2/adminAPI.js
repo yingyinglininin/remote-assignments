@@ -57,7 +57,7 @@ app.post("/users", function (req, res) {
                     "name": user.name,
                     "email": user.email
                   },
-                  "request-date": req.get("Date")
+                  "request-date": req.get("Request-Date")
                 }
             };
             res.status(200).json(responseData);
@@ -92,7 +92,7 @@ app.get('/users/:id', (req, res) => {
                 "name": user.name,
                 "email": user.email
               },
-              "request-date": req.get("Date")
+              "request-date": req.get("Request-Date")
             }
           };
           res.status(200).json(responseData);
