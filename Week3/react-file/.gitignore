@@ -26,7 +26,6 @@ yarn-error.log*
 *.css
 *.md
 /src/App.test.js
-/src/index.js
 /src/logo.svg
 /src/reportWebVitals.js
 /src/setupTests.js
